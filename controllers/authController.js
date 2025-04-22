@@ -44,9 +44,7 @@ async function loginUser(req, res) {
       };
       
       const token = jwt.sign(payload, JWT_SECRET, { expiresIn: 3600 });
-      
-      console.log("[DEBUG userController.js: 53] TOKEN IS: ", token)
-  
+        
       res.cookie('token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',

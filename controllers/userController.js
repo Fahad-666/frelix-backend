@@ -14,7 +14,7 @@ async function registerUser(req, res) {
       name: data.name,
       email: data.email,
       password: hashPassword(data.password),
-      type: data.userType,
+      type: data.type,
       created_at: Math.floor(Date.now() / 1000),
     });
 
