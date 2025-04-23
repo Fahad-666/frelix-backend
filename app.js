@@ -27,7 +27,11 @@ app.get('/get-profile', getUserProfile);
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  if(sequelize) {
-    console.log("Database Connection Established Successfully!")
-  }
+  sequelize.authenticate()
+  .then(() => console.log('Database connected!'))
+  .catch((err) => {
+    console.error('Database connection failed:', err);
+    process.exit(1);
+  });
+
 });
