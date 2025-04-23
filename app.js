@@ -9,11 +9,11 @@ const { verifyToken, loginUser } = require('./controllers/authController');
 const app = express();
 
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: "https://frelix.techiefahad.site",
   credentials: true,
 }));
 app.options('*', cors({
-  origin: "http://localhost:5173",
+  origin: "https://frelix.techiefahad.site",
   credentials: true,
 }));
 app.use(express.json());
