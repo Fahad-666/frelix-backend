@@ -9,7 +9,7 @@ const { verifyToken, loginUser } = require('./controllers/authController');
 const app = express();
 
 const corsOptions = {
-  origin: 'http://localhost:5173',
+  origin: 'https://frelix.techiefahad.site/',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   optionsSuccessStatus: 200,
   credentials: true,
