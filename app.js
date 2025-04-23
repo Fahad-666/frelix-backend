@@ -8,8 +8,14 @@ const { verifyToken, loginUser } = require('./controllers/authController');
 
 const app = express();
 
-app.use(cors());
-app.options('*', cors());
+app.use(cors({
+  origin: 'https://frelix.techiefahad.site',
+  credentials: true,
+}));
+app.options('*', cors({
+  origin: 'https://frelix.techiefahad.site',
+  credentials: true,
+}));
 app.use(express.json());
 app.use(cookieParser());
 
