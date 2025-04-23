@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken')
-const process = require('process')
 const User = require('../models/user')
 const { verifyPassword } = require('../utils/verifyPassword')
 const { hashPassword } = require('../utils/hash')
@@ -37,7 +36,6 @@ async function loginUser(req, res) {
       const payload = {
         userid: user.id,
         loginTime: Math.floor(Date.now() / 1000),
-        hashedPassword: hashPassword(user.password),
         email: user.email,
         type: user.type,
         name: user.name,
