@@ -65,4 +65,5 @@ async function loginUser(req, res) {
 module.exports = {
     verifyToken,
     loginUser,
+    JWT_SECRET,
 }

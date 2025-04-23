@@ -1,9 +1,10 @@
 const express = require('express');
 const cors = require('cors');
-const { registerUser } = require('./controllers/userController');
+const { registerUser, getUserProfile } = require('./controllers/userController');
 const sequelize = require('./config/database');
 const cookieParser = require('cookie-parser');
 const { verifyToken, loginUser } = require('./controllers/authController');
+
 
 const app = express();
 
@@ -22,8 +23,9 @@ app.use(cookieParser());
 app.post('/register', registerUser);
 app.post('/login', loginUser);
 app.get('/verify-token', verifyToken);
+app.get('/get-profile', getUserProfile);
 
-const PORT = process.env.PORT || 5000;
+const PORT = "5000";
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   if(sequelize) {

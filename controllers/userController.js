@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const { hashPassword } = require('../utils/hash');
+const { getDataFromToken } = require('../utils/getDataFromToken');
 
 async function registerUser(req, res) {
   const data = req.body;
@@ -24,6 +25,16 @@ async function registerUser(req, res) {
   }
 }
 
+async function getUserProfile(req, res) {
+  try{
+    const userData = getDataFromToken(req);
+    return res.status(200).json({ user: userData });
+  }catch(error){
+    return res.status(401).json({ error: error.message });
+  }
+}
+
 module.exports = {
   registerUser,
+  getUserProfile,
 };
