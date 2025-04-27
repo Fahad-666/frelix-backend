@@ -46,7 +46,7 @@ async function loginUser(req, res) {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         maxAge: 3600 * 1000,
-        sameSite: 'lax',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       });
   
       return res.status(200).json({ message: 'User logged in successfully', user: {
