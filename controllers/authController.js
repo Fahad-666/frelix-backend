@@ -1,9 +1,8 @@
 const jwt = require('jsonwebtoken')
 const User = require('../models/user')
 const { verifyPassword } = require('../utils/verifyPassword')
-const { hashPassword } = require('../utils/hash')
 
-const JWT_SECRET="4420c3804400190b418ec6d4f0e0e90bac99f081b010824b85e4c46702e2e660"
+const JWT_SECRET=process.env.JWT_SECRET;
 
 async function verifyToken(req, res) {
     const token = req.cookies.token;
@@ -60,8 +59,17 @@ async function loginUser(req, res) {
     }
   }
 
+async function logoutUser(req, res) {
+    res.clearCookie('token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'lax',
+    });
+    return res.status(200).json({ message: 'User logged out successfully' });
+}
+
 module.exports = {
     verifyToken,
     loginUser,
-    JWT_SECRET,
+    logoutUser,
 }

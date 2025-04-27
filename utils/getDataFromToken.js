@@ -1,9 +1,9 @@
-const jwt = require('jsonwebtoken');
-const { JWT_SECRET } = require('../controllers/authController');
+const JWT_SECRET = process.env.JWT_SECRET;
+const jwt = require("jsonwebtoken")
 
 function getDataFromToken(req) {
     const token = req.cookies.token;
-  
+
     if (!token) {
       throw new Error("Token not found in cookies");
     }

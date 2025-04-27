@@ -28,6 +28,10 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING(200),
     allowNull: false,
   },
+  category: {
+    type: DataTypes.STRING(100),
+    allowNull: true,
+  },
 }, {
   tableName: 'users',
   timestamps: false,
