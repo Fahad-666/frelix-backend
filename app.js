@@ -7,6 +7,9 @@ const sequelize = require('./config/database');
 const cookieParser = require('cookie-parser');
 const { verifyToken, loginUser, logoutUser } = require('./controllers/authController');
 
+const LOCAL_URL = process.env.LOCAL_URL;
+const HOSTED_URL = process.env.HOSTED_URL;
+
 const app = express();
 
 app.use((req, res, next) => {
@@ -15,11 +18,11 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-  origin: "https://frelix.techiefahad.site",
+  origin: HOSTED_URL,
   credentials: true,
 }));
 app.options('*', cors({
-  origin: "https://frelix.techiefahad.site",
+  origin: HOSTED_URL,
   credentials: true,
 }));
 app.use(express.json());
