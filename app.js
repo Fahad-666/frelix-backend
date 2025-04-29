@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const { registerUser, getUserProfile, updateCategory } = require('./controllers/userController');
+const { registerUser, getUserProfile, updateCategory, getUsersInfo } = require('./controllers/userController');
 const { createNewGig, deleteGig, getUserGigs, updateGig, getAllGigs } = require('./controllers/gigController');
 const sequelize = require('./config/database');
 const cookieParser = require('cookie-parser');
@@ -18,11 +18,11 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-  origin: HOSTED_URL,
+  origin: LOCAL_URL,
   credentials: true,
 }));
 app.options('*', cors({
-  origin: HOSTED_URL,
+  origin: LOCAL_URL,
   credentials: true,
 }));
 app.use(express.json());
@@ -42,6 +42,8 @@ app.get('/user-gigs', getUserGigs);
 app.delete('/delete-gig/:id', deleteGig);
 app.put('/update-gig/:id', updateGig);
 app.get('/gigs', getAllGigs);
+
+app.post('/get-users-info', getUsersInfo);
 
 const PORT = process.env.PORT;
 app.listen(PORT, '0.0.0.0', () => {

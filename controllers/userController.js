@@ -81,8 +81,27 @@ async function updateCategory(req, res) {
   }
 }
 
+async function getUsersInfo(req, res) {
+  try {
+    const { userIds } = req.body;
+    if (!Array.isArray(userIds)) {
+      return res.status(400).json({ error: "userIds must be an array" });
+    }
+    const users = await User.findAll({
+      where: {
+        id: userIds,
+      },
+      attributes: ['id', 'name'],
+    });
+    return res.status(200).json({ users });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+}
+
 module.exports = {
   registerUser,
   getUserProfile,
   updateCategory,
+  getUsersInfo,
 };
