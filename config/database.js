@@ -1,14 +1,13 @@
 const { Sequelize } = require('sequelize');
 
-const DB_USERNAME = 'root';
-const DB_HOST = '104.154.245.120';
+{/*const DB_USERNAME = 'root';
+const DB_HOST = 'mysql.railway.internal';
 const DB_PORT = '3306';
-const DB_NAME = 'frelix';
-const DB_PASSWORD = 'Fahad@2008';
+const DB_NAME = 'railway';
+const DB_PASSWORD = 'CfCtjJwSbmaUBguXxaRzNUveQqAIFKTh';*/}
+const DB_URL = 'mysql://root:CfCtjJwSbmaUBguXxaRzNUveQqAIFKTh@interchange.proxy.rlwy.net:12936/railway';
 
-const sequelize = new Sequelize(DB_NAME, DB_USERNAME, DB_PASSWORD, {
-  host: DB_HOST,
-  port: DB_PORT,
+const sequelize = new Sequelize(DB_URL, {
   dialect: 'mysql',
   logging: false,
 });

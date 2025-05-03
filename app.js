@@ -30,7 +30,6 @@ app.use(cookieParser());
 
 // Serve static files from uploads directory
 app.use('/uploads', express.static('uploads'));
-
 app.post('/register', registerUser);
 app.post('/login', loginUser);
 app.get('/verify-token', verifyToken);
