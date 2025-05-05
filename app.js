@@ -7,8 +7,8 @@ const sequelize = require('./config/database');
 const cookieParser = require('cookie-parser');
 const { verifyToken, loginUser, logoutUser } = require('./controllers/authController');
 
-const LOCAL_URL = "http://localhost:5173";
-const HOSTED_URL = "https://frelix.techiefahad.site/";
+const LOCAL_URL = process.env.LOCAL_URL;
+const HOSTED_URL = process.env.HOSTED_URL;
 
 const app = express();
 
