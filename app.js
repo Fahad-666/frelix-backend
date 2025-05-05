@@ -14,19 +14,16 @@ const app = express();
 
 app.use((req, res, next) => {
   console.log(`Request received: ${req.method} ${req.url}`);
-  if (req.method === 'OPTIONS') {
-    console.log('OPTIONS request headers:', req.headers);
-  }
   next();
 });
 
 // Temporarily allow all origins for debugging CORS issue on deployed server
 app.use(cors({
-  origin: '*',
+  origin: HOSTED_URL,
   credentials: true,
 }));
-app.options('*', cors({
-  origin: '*',
+app.options(HOSTED_URL, cors({
+  origin: HOSTED_URL,
   credentials: true,
 }));
 app.use(express.json());
