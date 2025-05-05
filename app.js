@@ -8,7 +8,7 @@ const cookieParser = require('cookie-parser');
 const { verifyToken, loginUser, logoutUser } = require('./controllers/authController');
 
 const LOCAL_URL = "http://localhost:5173";
-const HOSTED_URL = "https://frelix.techiefahad.site";
+const HOSTED_URL = "https://frelix.techiefahad.site/";
 
 const app = express();
 
