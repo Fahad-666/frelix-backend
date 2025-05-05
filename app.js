@@ -22,7 +22,7 @@ app.use(cors({
   origin: HOSTED_URL,
   credentials: true,
 }));
-app.options(HOSTED_URL, cors({
+app.options(cors({
   origin: HOSTED_URL,
   credentials: true,
 }));
