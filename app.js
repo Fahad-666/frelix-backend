@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const { registerUser, getUserProfile, updateCategory, getUsersInfo } = require('./controllers/userController');
+const { registerUser, getUserProfile, updateCategory, getUsersInfo, savePaymentData } = require('./controllers/userController');
 const { createNewGig, deleteGig, getUserGigs, updateGig, getAllGigs } = require('./controllers/gigController');
 const sequelize = require('./config/database');
 const cookieParser = require('cookie-parser');
@@ -17,7 +17,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Temporarily allow all origins for debugging CORS issue on deployed server
 app.use(cors({
   origin: HOSTED_URL,
   credentials: true,
@@ -29,7 +28,6 @@ app.options('*', cors({
 app.use(express.json());
 app.use(cookieParser());
 
-// Serve static files from uploads directory
 app.use('/uploads', express.static('uploads'));
 app.post('/register', registerUser);
 app.post('/login', loginUser);
@@ -42,7 +40,7 @@ app.get('/user-gigs', getUserGigs);
 app.delete('/delete-gig/:id', deleteGig);
 app.put('/update-gig/:id', updateGig);
 app.get('/gigs', getAllGigs);
-
+app.post('/collect-payment-details', savePaymentData)
 app.post('/get-users-info', getUsersInfo);
 
 const PORT = process.env.PORT;

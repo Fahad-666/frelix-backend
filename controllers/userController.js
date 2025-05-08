@@ -56,6 +56,46 @@ async function getUserProfile(req, res) {
   }
 }
 
+async function savePaymentData(req, res) {
+  let userData;
+  try {
+    userData = getDataFromToken(req);
+  } catch (error) {
+    return res.status(401).json({ error: "Unauthorized: Invalid or missing token" });
+  }
+
+  if (!userData || !userData.userid) {
+    return res.status(401).json({ error: "Unauthorized: User ID missing in token" });
+  }
+
+  const { account_holder_name, phone_number, country, bank_name, acc_number } = req.body;
+
+  if (!account_holder_name || !phone_number || !country || !bank_name || !acc_number) {
+    return res.status(400).json({ error: "Please enter all information is required" });
+  }
+
+  let user;
+  try {
+    user = await User.findOne({ where: { id: userData.userid } });
+  } catch (error) {
+    console.error("Sequelize findOne error:", error);
+    return res.status(500).json({ error: "Database query error" });
+  }
+
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  user.accountHolderName = account_holder_name;
+  user.phoneNumber = phone_number;
+  user.country = country;
+  user.bankName = bank_name;
+  user.accountNumber = acc_number;
+  await user.save();
+
+  return res.status(200).json({ message: "Payment details updated successfully" });
+}
+
 async function updateCategory(req, res) {
   try {
     console.log("updateCategory called with body:", req.body);
@@ -104,4 +144,5 @@ module.exports = {
   getUserProfile,
   updateCategory,
   getUsersInfo,
+  savePaymentData,
 };
