@@ -56,6 +56,8 @@ async function getUserProfile(req, res) {
   }
 }
 
+const UserPaymentDetails = require('../models/userPaymentDetails');
+
 async function savePaymentData(req, res) {
   let userData;
   try {
@@ -86,14 +88,31 @@ async function savePaymentData(req, res) {
     return res.status(404).json({ error: "User not found" });
   }
 
-  user.accountHolderName = account_holder_name;
-  user.phoneNumber = phone_number;
-  user.country = country;
-  user.bankName = bank_name;
-  user.accountNumber = acc_number;
-  await user.save();
+  try {
+    const existingPayment = await UserPaymentDetails.findOne({ where: { userId: userData.userid } });
+    if (existingPayment) {
+      existingPayment.accountHolderName = account_holder_name;
+      existingPayment.phoneNumber = phone_number;
+      existingPayment.country = country;
+      existingPayment.bankName = bank_name;
+      existingPayment.accountNumber = acc_number;
+      await existingPayment.save();
+    } else {
+      await UserPaymentDetails.create({
+        userId: userData.userid,
+        accountHolderName: account_holder_name,
+        phoneNumber: phone_number,
+        country: country,
+        bankName: bank_name,
+        accountNumber: acc_number,
+      });
+    }
+  } catch (error) {
+    console.error("Sequelize save/create error:", error);
+    return res.status(500).json({ error: "Failed to save payment details" });
+  }
 
-  return res.status(200).json({ message: "Payment details updated successfully" });
+  return res.status(200).json({ message: "Payment details saved successfully" });
 }
 
 async function updateCategory(req, res) {
@@ -139,10 +158,39 @@ async function getUsersInfo(req, res) {
   }
 }
 
+async function getPaymentDetails(req, res) {
+  let userData;
+  try {
+    userData = getDataFromToken(req);
+  } catch (error) {
+    return res.status(401).json({ error: "Unauthorized: Invalid or missing token" });
+  }
+
+  if (!userData || !userData.userid) {
+    return res.status(401).json({ error: "Unauthorized: User ID missing in token" });
+  }
+
+  try {
+    const paymentDetails = await UserPaymentDetails.findOne({
+      where: { userId: userData.userid },
+    });
+
+    if (!paymentDetails) {
+      return res.status(404).json({ error: "Payment details not found" });
+    }
+
+    return res.status(200).json({ paymentDetails });
+  } catch (error) {
+    console.error("Error fetching payment details:", error);
+    return res.status(500).json({ error: "Failed to fetch payment details" });
+  }
+}
+
 module.exports = {
   registerUser,
   getUserProfile,
   updateCategory,
   getUsersInfo,
   savePaymentData,
+  getPaymentDetails,
 };

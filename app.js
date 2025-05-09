@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const { registerUser, getUserProfile, updateCategory, getUsersInfo, savePaymentData } = require('./controllers/userController');
+const { registerUser, getUserProfile, updateCategory, getUsersInfo, savePaymentData, getPaymentDetails } = require('./controllers/userController');
 const { createNewGig, deleteGig, getUserGigs, updateGig, getAllGigs } = require('./controllers/gigController');
 const sequelize = require('./config/database');
 const cookieParser = require('cookie-parser');
@@ -40,6 +40,7 @@ app.get('/user-gigs', getUserGigs);
 app.delete('/delete-gig/:id', deleteGig);
 app.put('/update-gig/:id', updateGig);
 app.get('/gigs', getAllGigs);
+app.get('/get-payment-details', getPaymentDetails);
 app.post('/collect-payment-details', savePaymentData)
 app.post('/get-users-info', getUsersInfo);
 
