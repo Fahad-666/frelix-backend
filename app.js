@@ -20,11 +20,11 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-  origin: LOCAL_URL,
+  origin: HOSTED_URL,
   credentials: true,
 }));
 app.options('*', cors({
-  origin: LOCAL_URL,
+  origin: HOSTED_URL,
   credentials: true,
 }));
 app.use(express.json());
