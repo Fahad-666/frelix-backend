@@ -3,6 +3,8 @@ const cors = require('cors');
 require('dotenv').config();
 const { registerUser, getUserProfile, updateCategory, getUsersInfo, savePaymentData, getPaymentDetails } = require('./controllers/userController');
 const { createNewGig, deleteGig, getUserGigs, updateGig, getAllGigs } = require('./controllers/gigController');
+const { uploadMessageFile } = require('./controllers/messageController');
+const { recordImpression } = require('./controllers/impressionController');
 const sequelize = require('./config/database');
 const cookieParser = require('cookie-parser');
 const { verifyToken, loginUser, logoutUser } = require('./controllers/authController');
@@ -18,11 +20,11 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-  origin: HOSTED_URL,
+  origin: LOCAL_URL,
   credentials: true,
 }));
 app.options('*', cors({
-  origin: HOSTED_URL,
+  origin: LOCAL_URL,
   credentials: true,
 }));
 app.use(express.json());
@@ -43,6 +45,8 @@ app.get('/gigs', getAllGigs);
 app.get('/get-payment-details', getPaymentDetails);
 app.post('/collect-payment-details', savePaymentData)
 app.post('/get-users-info', getUsersInfo);
+app.post('/gigs/:id/impression', recordImpression);
+app.post('/upload-message-file', uploadMessageFile);
 
 const PORT = process.env.PORT;
 app.listen(PORT, '0.0.0.0', () => {
