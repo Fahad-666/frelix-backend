@@ -22,8 +22,9 @@ const UserPaymentDetails = sequelize.define('UserPaymentDetails', {
     allowNull: false,
   },
   phoneNumber: {
-    type: DataTypes.STRING(50),
+    type: DataTypes.STRING(20),
     allowNull: false,
+    unique: true,
   },
   country: {
     type: DataTypes.STRING(100),
@@ -34,9 +35,14 @@ const UserPaymentDetails = sequelize.define('UserPaymentDetails', {
     allowNull: false,
   },
   accountNumber: {
-    type: DataTypes.STRING(100),
+    type: DataTypes.STRING(50),
     allowNull: false,
+    unique: true,
   },
+  cooldownUntil: {
+    type: DataTypes.DATE,
+    allowNull: true
+  }
 }, {
   tableName: 'user_payment_details',
   timestamps: false,

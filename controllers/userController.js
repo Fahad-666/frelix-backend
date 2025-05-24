@@ -48,11 +48,56 @@ async function registerUser(req, res) {
 }
 
 async function getUserProfile(req, res) {
-  try{
+  try {
     const userData = getDataFromToken(req);
-    return res.status(200).json({ user: userData });
-  }catch(error){
+    const user = await User.findOne({ where: { id: userData.userid } });
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    return res.status(200).json({ 
+      user: {
+        ...userData,
+        location: user.location || '',
+        bio: user.bio || '',
+      }
+    });
+  } catch (error) {
     return res.status(401).json({ error: error.message });
+  }
+}
+
+async function updateProfile(req, res) {
+  try {
+    const userData = getDataFromToken(req);
+    const { name, email, bio, location } = req.body;
+
+    const user = await User.findOne({ where: { id: userData.userid } });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Update user fields
+    await user.update({
+      name: name || user.name,
+      email: email || user.email,
+      bio: bio || user.bio,
+      location: location || user.location
+    });
+
+    // Fetch updated user data
+    const updatedUser = await User.findByPk(userData.userid, {
+      attributes: ['id', 'name', 'email', 'bio', 'location']
+    });
+
+    res.json({ 
+      message: 'Profile updated successfully',
+      user: updatedUser
+    });
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    res.status(500).json({ message: 'Error updating profile' });
   }
 }
 
@@ -90,12 +135,26 @@ async function savePaymentData(req, res) {
 
   try {
     const existingPayment = await UserPaymentDetails.findOne({ where: { userId: userData.userid } });
+    
+    // Check if in cooldown period
+    if (existingPayment && existingPayment.cooldownUntil && new Date(existingPayment.cooldownUntil) > new Date()) {
+      return res.status(400).json({ 
+        error: "Payment details cannot be updated during cooldown period",
+        cooldownUntil: existingPayment.cooldownUntil
+      });
+    }
+
+    // Set cooldown period to 7 days from now
+    const cooldownUntil = new Date();
+    cooldownUntil.setDate(cooldownUntil.getDate() + 7);
+
     if (existingPayment) {
       existingPayment.accountHolderName = account_holder_name;
       existingPayment.phoneNumber = phone_number;
       existingPayment.country = country;
       existingPayment.bankName = bank_name;
       existingPayment.accountNumber = acc_number;
+      existingPayment.cooldownUntil = cooldownUntil;
       await existingPayment.save();
     } else {
       await UserPaymentDetails.create({
@@ -105,14 +164,26 @@ async function savePaymentData(req, res) {
         country: country,
         bankName: bank_name,
         accountNumber: acc_number,
+        cooldownUntil: cooldownUntil
       });
     }
+
+    return res.status(200).json({ 
+      message: "Payment details saved successfully",
+      cooldownUntil: cooldownUntil
+    });
   } catch (error) {
     console.error("Sequelize save/create error:", error);
+    if (error.name === 'SequelizeUniqueConstraintError') {
+      const field = error.errors[0].path;
+      if (field === 'idx_phone_number') {
+        return res.status(400).json({ error: "Duplicate entry: This phone number is already registered" });
+      } else if (field === 'idx_account_number') {
+        return res.status(400).json({ error: "Duplicate entry: This account number is already registered" });
+      }
+    }
     return res.status(500).json({ error: "Failed to save payment details" });
   }
-
-  return res.status(200).json({ message: "Payment details saved successfully" });
 }
 
 async function updateCategory(req, res) {
@@ -179,7 +250,11 @@ async function getPaymentDetails(req, res) {
       return res.status(404).json({ error: "Payment details not found" });
     }
 
-    return res.status(200).json({ paymentDetails });
+    return res.status(200).json({ 
+      paymentDetails,
+      isInCooldown: paymentDetails.cooldownUntil && new Date(paymentDetails.cooldownUntil) > new Date(),
+      cooldownUntil: paymentDetails.cooldownUntil
+    });
   } catch (error) {
     console.error("Error fetching payment details:", error);
     return res.status(500).json({ error: "Failed to fetch payment details" });
@@ -189,6 +264,7 @@ async function getPaymentDetails(req, res) {
 module.exports = {
   registerUser,
   getUserProfile,
+  updateProfile,
   updateCategory,
   getUsersInfo,
   savePaymentData,

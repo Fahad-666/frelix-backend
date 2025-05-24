@@ -8,6 +8,7 @@ const { recordImpression } = require('./controllers/impressionController');
 const sequelize = require('./config/database');
 const cookieParser = require('cookie-parser');
 const { verifyToken, loginUser, logoutUser } = require('./controllers/authController');
+const { updateProfile } = require('./controllers/userController');
 
 const LOCAL_URL = process.env.LOCAL_URL;
 const HOSTED_URL = process.env.HOSTED_URL;
@@ -47,6 +48,7 @@ app.post('/collect-payment-details', savePaymentData)
 app.post('/get-users-info', getUsersInfo);
 app.post('/gigs/:id/impression', recordImpression);
 app.post('/upload-message-file', uploadMessageFile);
+app.post('/update-profile', updateProfile);
 
 const PORT = process.env.PORT;
 app.listen(PORT, '0.0.0.0', () => {
